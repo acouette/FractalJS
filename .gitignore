@@ -4,3 +4,4 @@ local/
 credentials/
 .vscode
 stats.json
+.idea/
