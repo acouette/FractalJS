@@ -2,19 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d4c72f84-d60c-4dc3-b482-0b1508709c4b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.babelrc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/FractalJS.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/js/node/http/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/js/node/http/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/js/node/http/public/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/js/node/http/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/js/node/http/server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/js/ui/components/infobox.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,88 +16,23 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/package.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="116" selection-start-line="11" selection-start-column="110" selection-end-line="11" selection-end-column="116" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dist/js/node/canvas.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-184" />
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dist/js/node/http/public/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="521">
-              <caret line="73" selection-start-line="73" selection-end-line="73" />
-              <folding>
-                <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dist/js/node/http/server.js">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/js/node/http/server.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-425">
-              <caret line="78" column="12" selection-start-line="78" selection-start-column="12" selection-end-line="78" selection-end-column="12" />
-              <folding>
-                <element signature="e#0#30#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/js/node/http/presets.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="86" column="26" selection-start-line="86" selection-start-column="26" selection-end-line="86" selection-end-column="26" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/js/node/http/memoryStream.js">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/js/node/canvas.js">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/js/node/http/public/index.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="356">
-              <caret line="47" selection-start-line="47" selection-end-line="47" />
+              <caret line="59" selection-start-line="59" selection-end-line="59" />
               <folding>
-                <element signature="n#style#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/html/index.html">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/js/node/http/server.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-360" />
+            <state relative-caret-position="164">
+              <caret line="66" column="26" selection-start-line="66" selection-start-column="26" selection-end-line="66" selection-end-column="26" />
+            </state>
           </provider>
         </entry>
       </file>
@@ -132,8 +58,8 @@
         <option value="$PROJECT_DIR$/app/js/node/http/index.html" />
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/dist/js/node/http/public/index.html" />
-        <option value="$PROJECT_DIR$/app/js/node/http/server.js" />
         <option value="$PROJECT_DIR$/app/js/node/http/public/index.html" />
+        <option value="$PROJECT_DIR$/app/js/node/http/server.js" />
       </list>
     </option>
   </component>
@@ -156,48 +82,6 @@
               <item name="FractalJS" type="b2602c69:ProjectViewProjectNode" />
               <item name="FractalJS" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="FractalJS" type="b2602c69:ProjectViewProjectNode" />
-              <item name="FractalJS" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="FractalJS" type="b2602c69:ProjectViewProjectNode" />
-              <item name="FractalJS" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="FractalJS" type="b2602c69:ProjectViewProjectNode" />
-              <item name="FractalJS" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-              <item name="node" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="FractalJS" type="b2602c69:ProjectViewProjectNode" />
-              <item name="FractalJS" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-              <item name="node" type="462c0819:PsiDirectoryNode" />
-              <item name="http" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="FractalJS" type="b2602c69:ProjectViewProjectNode" />
-              <item name="FractalJS" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-              <item name="node" type="462c0819:PsiDirectoryNode" />
-              <item name="http" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="FractalJS" type="b2602c69:ProjectViewProjectNode" />
-              <item name="FractalJS" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-              <item name="util" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -208,7 +92,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1549806577755" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1549831497394" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="$PROJECT_DIR$/node_modules/eslint" />
@@ -251,12 +135,12 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12115000" />
+    <option name="totallyTimeSpent" value="16026000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="27" width="1853" height="1053" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25234678" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25234678" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -273,7 +157,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.3535135" />
+      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.3535135" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -413,25 +297,20 @@
     <entry file="file://$PROJECT_DIR$/dist/js/node/http/server.js">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/js/node/http/server.js">
+    <entry file="file://$PROJECT_DIR$/app/js/node/http/public/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-425">
-          <caret line="78" column="12" selection-start-line="78" selection-start-column="12" selection-end-line="78" selection-end-column="12" />
+        <state relative-caret-position="356">
+          <caret line="59" selection-start-line="59" selection-end-line="59" />
           <folding>
-            <element signature="e#0#30#0" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/js/node/http/public/index.html">
+    <entry file="file://$PROJECT_DIR$/app/js/node/http/server.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="356">
-          <caret line="47" selection-start-line="47" selection-end-line="47" />
-          <folding>
-            <element signature="n#style#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
-          </folding>
+        <state relative-caret-position="164">
+          <caret line="66" column="26" selection-start-line="66" selection-start-column="26" selection-end-line="66" selection-end-column="26" />
         </state>
       </provider>
     </entry>

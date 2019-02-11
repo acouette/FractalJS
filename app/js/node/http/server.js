@@ -64,7 +64,7 @@ if (cluster.isMaster && process.env.ENABLE_CLUSTER) {
   console.log(`Master ${process.pid} is running`);
 
   // Fork workers.
-  for (let i = 0; i < numCPUs; i++) {
+  for (let i = 0; i < 2 * numCPUs; i++) {
     cluster.fork();
   }
 
