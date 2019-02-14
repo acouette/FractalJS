@@ -36,13 +36,33 @@
 
     function repaint(){
         console.log('repainting');
-        let innerHtml = '';
+        document.getElementById("container").innerHTML = '';
         for(let i=0; i<imageCount; i++){
+            console.log(imageCount)
+            console.log('image '+i)
             const randomCount = Math.round(Math.random() * 21);
             const randomDisableCache = Math.round(Math.random() * 100000);
-            innerHtml += `<img src="/random?preset=${randomCount}&width=100&height=100&random=${randomDisableCache}" style="width: 100px; height: 100px; margin: 3px; background-color: #3F51B5"/>`
+            const img = document.createElement('img');
+            img.style.cssText="width: 100px; height: 100px; margin: 3px; background-color: #3F51B5";
+            document.getElementById("container").appendChild(img);
+
+            fetch(`https://qrgtkvh0zk.execute-api.eu-west-1.amazonaws.com/default/fractal?preset=${randomCount}&width=100&height=100&random=${randomDisableCache}`, {
+                method: "GET", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, cors, *same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                headers: {
+                    "Accept": "image/png",
+                }
+                //body: JSON.stringify(data), // body data type must match "Content-Type" header
+            })
+                .then(r => new Response(r.body))
+                .then(response => response.blob())
+                .then(blob => URL.createObjectURL(blob))
+                .then(url => console.log(img.src = url))
+
+
+                .catch(e=> {console.error(e)});
         }
-        document.getElementById("container").innerHTML = innerHtml;
     }
 
 
