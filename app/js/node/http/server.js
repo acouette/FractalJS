@@ -11,8 +11,6 @@ const cluster = require('cluster');
 const http = require('http');
 const numCPUs = require('os').cpus().length;
 const path = require('path');
-const AsyncLock = require('async-lock');
-var lock = new AsyncLock({maxPending: 1000});
 
 
 // simulate browser environment
@@ -39,7 +37,7 @@ function renderOnCanvas(desc, color, width, height) {
     return new Uint8Array(buffer);
   });
 }
-let toto = 0;
+let iterationNb = 0;
 
 function getPngBuffer(array, width, height) {
   return new Promise((resolve) => {
@@ -51,7 +49,8 @@ function getPngBuffer(array, width, height) {
     for (let i = 0; i < width * height * 4; i += 1) {
       png.data[i] = array[i];
     }
-    const iter = 'iter'+toto;
+    iterationNb += 1;
+    const iter = `iteration ${iterationNb}`;
     const wstream = new WMStrm(iter);
     png.pack().pipe(wstream); // stupid PNG library... !
     wstream.on('finish', () => {
@@ -78,10 +77,12 @@ if (cluster.isMaster && process.env.ENABLE_CLUSTER) {
 
   app.use('/', express.static(path.join(__dirname, 'public')));
 
+  app.get('/health', (req, res)=>{
+    res.send(200);
+  });
+
   app.get('/random', async (req, res) => {
 
-
-    lock.acquire('key', async function(cb) {
 
     const width = req.query.width ? Number(req.query.width) : 512;
     const height = req.query.height ? Number(req.query.height) : 512;
@@ -124,16 +125,15 @@ if (cluster.isMaster && process.env.ENABLE_CLUSTER) {
       res.set('Pragma', 'no-cache');
       res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.send(str);
-      cb();
-    }, () => {
     });
-
-
-
-  });
 
   app.listen(port, () => console.log(`Listening on port ${port}!`));
 }
+
+
+
+
+
 
 
 
