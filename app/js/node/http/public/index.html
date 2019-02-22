@@ -1,15 +1,135 @@
 <html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <style>
+        .donut-size {
+            font-size: 12em;
+        }
+
+        .pie-wrapper {
+            position: relative;
+            width: 1em;
+            height: 1em;
+            margin: 0px auto;
+        }
+
+        .pie {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            clip: rect(0, 1em, 1em, 0.5em);
+        }
+
+        .half-circle {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            border: 0.1em solid hsl(168, 76%, 42%);
+            border-radius: 50%;
+            clip: rect(0em, 0.5em, 1em, 0em);
+        }
+
+        .right-side {
+            transform: rotate(0deg);
+        }
+
+        .label {
+            position: absolute;
+            top: 0.52em;
+            right: 0.4em;
+            bottom: 0.4em;
+            left: 0.4em;
+            display: block;
+            background: none;
+            border-radius: 50%;
+            color: #7F8C8D;
+            font-size: 0.25em;
+            line-height: 2.6em;
+            text-align: center;
+            cursor: default;
+            z-index: 2;
+        }
+
+        .smaller {
+            padding-bottom: 20px;
+            color: #BDC3C7;
+            font-size: .45em;
+            vertical-align: super;
+        }
+
+        .shadow {
+            width: 100%;
+            height: 100%;
+            border: 0.1em solid #BDC3C7;
+            border-radius: 50%;
+        }
+
+        .happy {
+            color: yellowgreen;
+        }
+
+        .angry {
+            color: #c62828;
+        }
+
+        .neutre {
+            color: #FFD740;
+        }
+
+    </style>
+</head>
 <body>
 
-<div>
-    <div>
-        <div>
-            <label>Clients per second: </label>
-            <input onkeyup="onImagesPerSecondChange(this)" onmouseup="onImagesPerSecondChange(this)" type="number"
-                   value="1"/>
+<div class="card">
+    <div class="card-body">
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Request images : </label>
+            <div class="col-sm-3">
+                <input onkeyup="onImagesPerSecondChange(this)" onmouseup="onImagesPerSecondChange(this)" type="number"
+                       value="1" class="form-control">
+            </div>
         </div>
 
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-body" style="width: 100% !important;">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-body" style="width: 100% !important;">
+                            <div id="specificChart" class="donut-size">
+                                <div class="pie-wrapper">
+                                <span class="label">
+                                    <span class="num">0</span><span class="smaller"><i class="fas fa-smile-beam happy"
+                                                                                       id="status"></i></span>
+                                </span>
+                                    <div class="pie">
+                                        <div class="left-side half-circle"></div>
+                                        <div class="right-side half-circle"></div>
+                                    </div>
+                                    <div class="shadow"></div>
+                                </div>
+                            </div>
+                            <p style="color: grey; font-size: 14px; text-align: center; margin-top: 3%;">Clients waiting</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div>
             <label>Clients waiting : </label>
             <span id="client-waiting">N/A</span>
@@ -33,88 +153,216 @@
 
 
 </div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script src="https://github.com/kimmobrunfeldt/progressbar.js/blob/master/dist/progressbar.js"></script>
 <script>
 
 
-    let imagesPerSecond = 1;
-    let interval;
+  let imagesPerSecond = 1;
+  let interval;
 
 
-    let cumulatedLatencies = 0;
-    let count = 0;
-    let clientsWaiting = 0;
+  let cumulatedLatencies = 0;
+  let count = 0;
+  let clientsWaiting = 0;
 
 
-    function getFractal() {
-        const randomCount = Math.round(Math.random() * 21);
-        const randomDisableCache = Math.round(Math.random() * 100000);
-        const img = document.createElement('img');
-        img.style.cssText = "width: 100px; height: 100px; margin: 3px; display: none";
-        document.getElementById("container").appendChild(img);
-        clientsWaiting += 1;
-        const start = new Date().getTime();
-
-        fetch(`/random?preset=${randomCount}&width=100&height=100&random=${randomDisableCache}`, {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, cors, *same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            headers: {
-                "Accept": "image/png",
-            }
-            //body: JSON.stringify(data), // body data type must match "Content-Type" header
-        })
-            .then(r => new Response(r.body))
-            .then(response => response.blob())
-            .then(blob => URL.createObjectURL(blob))
-            .then(url => console.log(img.src = url))
-            .then(() => {
-                img.style.cssText = "width: 100px; height: 100px; margin: 3px";
-                cumulatedLatencies += (new Date().getTime() - start);
-                clientsWaiting -= 1;
-                document.getElementById("client-waiting").textContent = clientsWaiting;
-                count += 1;
-            })
-            .then(() => setTimeout(() => {
-                img.remove();
-            }, 3000))
-
-
-            .catch(e => {
-                console.error(e)
-            });
+  function getFractal() {
+    if (clientsWaiting > 50) {
+      return;
     }
+    const randomCount = Math.round(Math.random() * 21);
+    const randomDisableCache = Math.round(Math.random() * 100000);
+    const img = document.createElement('img');
+    img.style.cssText = 'width: 100px; height: 100px; margin: 3px; display: none';
+    document.getElementById('container')
+      .appendChild(img);
+    clientsWaiting += 1;
+    const start = new Date().getTime();
 
-    function onImagesPerSecondChange(event) {
-        imagesPerSecond = event.value;
-        if (interval) {
-            clearInterval(interval);
-        }
-        interval = setInterval(getFractal, (1 / imagesPerSecond) * 1000);
+    fetch(`/random?preset=${randomCount}&width=100&height=100&random=${randomDisableCache}`, {
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, cors, *same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      headers: {
+        'Accept': 'image/png',
+      }
+      //body: JSON.stringify(data), // body data type must match "Content-Type" header
+    })
+      .then(r => new Response(r.body))
+      .then(response => response.blob())
+      .then(blob => URL.createObjectURL(blob))
+      .then(url => console.log(img.src = url))
+      .then(() => {
+        img.style.cssText = 'width: 100px; height: 100px; margin: 3px';
+        cumulatedLatencies += (new Date().getTime() - start);
+        clientsWaiting -= 1;
+        updateDonutChart('#specificChart', clientsWaiting, true);
+        document.getElementById('client-waiting').textContent = clientsWaiting;
+        count += 1;
+      })
+      .then(() => setTimeout(() => {
+        img.remove();
+      }, 3000))
+
+
+      .catch(e => {
+        console.error(e);
+      });
+  }
+
+  function onImagesPerSecondChange(event) {
+    imagesPerSecond = event.value;
+    if (interval) {
+      clearInterval(interval);
     }
+    interval = setInterval(getFractal, (1 / imagesPerSecond) * 1000);
+  }
 
 
-    const statsHistory = [];
-    const statPeriodInSeconds = 5;
-    //stats
-    setInterval(function () {
-        const averageWait = Math.floor(cumulatedLatencies / count);
-        const averageThroughput = count / statPeriodInSeconds;
-        statsHistory.push({
-            averageWait,
-            averageThroughput,
-        });
-
-        document.getElementById("average-wait").textContent = averageWait.toString();
-        document.getElementById("average-throughput").textContent = averageThroughput.toString();
-        count = 0;
-        cumulatedLatencies = 0;
-    }, statPeriodInSeconds * 1000);
-
-
-    onImagesPerSecondChange({
-        value: 1
+  const statsHistory = [];
+  const testHistory = [];
+  const statPeriodInSeconds = 5;
+  //stats
+  setInterval(function () {
+    const averageWait = Math.floor(cumulatedLatencies / count);
+    const averageThroughput = count / statPeriodInSeconds;
+    statsHistory.push({
+      averageWait,
+      averageThroughput,
     });
+    testHistory.push(averageWait);
+    adddata(averageWait, averageThroughput);
+    console.error(statsHistory);
 
+    document.getElementById('average-wait').textContent = averageWait.toString();
+    document.getElementById('average-throughput').textContent = averageThroughput.toString();
+    count = 0;
+    cumulatedLatencies = 0;
+  }, statPeriodInSeconds * 1000);
+
+
+  onImagesPerSecondChange({
+    value: 1
+  });
+
+  const canvas = document.getElementById('myChart');
+  const data = {
+    labels: [],
+    datasets: [
+      {
+        fill: false,
+        lineTension: 0.1,
+        backgroundColor: 'rgba(75,192,192,0.4)',
+        borderColor: 'rgba(75,192,192,1)',
+        borderCapStyle: 'butt',
+        borderDash: [],
+        borderDashOffset: 0.0,
+        borderJoinStyle: 'miter',
+        pointBorderColor: 'rgba(75,192,192,1)',
+        pointBackgroundColor: '#fff',
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+        pointHoverBorderColor: 'rgba(220,220,220,1)',
+        pointHoverBorderWidth: 2,
+        pointRadius: 5,
+        pointHitRadius: 10,
+        data: []
+      }
+    ]
+  };
+
+  function adddata(averageWait, averageOutput) {
+    myLineChart.data.datasets[0].data.push(averageWait);
+    myLineChart.data.labels.push(averageOutput);
+    myLineChart.update();
+  }
+
+  const option = {
+    showLines: true,
+    legend: {
+      display: false
+    },
+    scales: {
+      yAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Average wait time'
+        }
+      }],
+      xAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Average throughput'
+        }
+      }],
+    }
+  };
+  const myLineChart = Chart.Line(canvas, {
+    data: data,
+    options: option
+  });
+
+
+</script>
+
+<script>
+  function updateDonutChart(el, percent, donut) {
+    percent = Math.round(percent);
+    if (percent > 50) {
+      percent = 50;
+    } else if (percent < 0) {
+      percent = 0;
+    }
+    const deg = Math.round(360 * (percent / 50));
+    const statusContent = document.getElementById('status');
+    statusContent.removeAttribute('class');
+    if (percent < 10) {
+      statusContent.setAttribute('class', 'fas fa-smile-beam happy');
+    } else if (percent >= 10 && percent < 30) {
+      statusContent.setAttribute('class', 'far fa-meh neutre');
+    } else {
+      statusContent.setAttribute('class', 'far fa-angry angry');
+    }
+
+    if (percent > 25) {
+      $(el + ' .pie')
+        .css('clip', 'rect(auto, auto, auto, auto)');
+      $(el + ' .right-side')
+        .css('transform', 'rotate(180deg)');
+    } else {
+      $(el + ' .pie')
+        .css('clip', 'rect(0, 1em, 1em, 0.5em)');
+      $(el + ' .right-side')
+        .css('transform', 'rotate(0deg)');
+    }
+    if (donut) {
+      $(el + ' .right-side')
+        .css('border-width', '0.1em');
+      $(el + ' .left-side')
+        .css('border-width', '0.1em');
+      $(el + ' .shadow')
+        .css('border-width', '0.1em');
+    }
+    $(el + ' .num')
+      .text(percent);
+    $(el + ' .left-side')
+      .css('transform', 'rotate(' + deg + 'deg)');
+  }
+
+  // Pass in a number for the percent
+  updateDonutChart('#specificChart', 0, true);
 </script>
 </body>
 </html>
