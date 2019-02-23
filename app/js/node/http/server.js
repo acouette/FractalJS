@@ -9,13 +9,18 @@ import presets from './presets';
 
 const cluster = require('cluster');
 const http = require('http');
-const numCPUs = require('os').cpus().length;
+const numCPUs = require('os')
+  .cpus().length;
 const path = require('path');
 
 
 // simulate browser environment
 global.navigator = { hardwareConcurrency: 1 };
-global.performance = { now() { return Date.now(); } };
+global.performance = {
+  now() {
+    return Date.now();
+  }
+};
 
 const port = 8080;
 
@@ -31,12 +36,13 @@ function renderOnCanvas(desc, color, width, height) {
   };
   const engine = new Engine(params);
   return engine.draw({ details: 'normal' })
-  .then(() => engine.draw({ details: 'supersampling', size: 4 }))
-  .then(() => {
-    const buffer = canvas.buffer;
-    return new Uint8Array(buffer);
-  });
+    .then(() => engine.draw({ details: 'supersampling', size: 4 }))
+    .then(() => {
+      const buffer = canvas.buffer;
+      return new Uint8Array(buffer);
+    });
 }
+
 let iterationNb = 0;
 
 function getPngBuffer(array, width, height) {
@@ -52,11 +58,16 @@ function getPngBuffer(array, width, height) {
     iterationNb += 1;
     const iter = `iteration ${iterationNb}`;
     const wstream = new WMStrm(iter);
-    png.pack().pipe(wstream); // stupid PNG library... !
+    png.pack()
+      .pipe(wstream); // stupid PNG library... !
     wstream.on('finish', () => {
       resolve(memStore[iter]);
     });
   });
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 if (cluster.isMaster && process.env.ENABLE_CLUSTER) {
@@ -73,50 +84,62 @@ if (cluster.isMaster && process.env.ENABLE_CLUSTER) {
 } else {
   const app = express();
 
-  console.log(__dirname)
+  console.log(__dirname);
 
   app.use('/', express.static(path.join(__dirname, 'public')));
 
-  app.get('/health', (req, res)=>{
+  app.get('/health', (req, res) => {
     res.send(200);
   });
+
+  let concurrentRequests = 0;
+
+
+
 
   app.get('/random', async (req, res) => {
 
 
-    const width = req.query.width ? Number(req.query.width) : 512;
-    const height = req.query.height ? Number(req.query.height) : 512;
-    // preset or default
-    let desc = {};
-    let color = {};
-    if (req.query.preset) {
-      [desc, color] = Url.readCurrentScheme(presets[Number(req.query.preset)].location);
-    } else {
-      desc = {
-        x: -0.7,
-        y: 0,
-        w: 2.5,
-        iter: 50,
-        type: 'mandelbrot',
-        smooth: true
-      };
-      color = {
-        offset: 0,
-        density: 20,
-        id: 0
-      };
-    }
-    // additional parameters
-    if (req.query.offset) color.offset = Number(req.query.offset);
-    if (req.query.density) color.density = Number(req.query.density);
-    if (req.query.id) color.id = Number(req.query.id);
+    concurrentRequests += 1;
 
-    if (req.query.x) desc.x = Number(req.query.x);
-    if (req.query.y) desc.y = Number(req.query.y);
-    if (req.query.w) desc.w = Number(req.query.w);
-    if (req.query.iter) desc.iter = Number(req.query.iter);
-    if (req.query.type) desc.type = req.query.type;
-    if (req.query.smooth) desc.smooth = req.query.smooth === 'true';
+    try {
+      if (concurrentRequests > 3) {
+        await sleep(500);
+      }
+
+      const width = req.query.width ? Number(req.query.width) : 512;
+      const height = req.query.height ? Number(req.query.height) : 512;
+      // preset or default
+      let desc = {};
+      let color = {};
+      if (req.query.preset) {
+        [desc, color] = Url.readCurrentScheme(presets[Number(req.query.preset)].location);
+      } else {
+        desc = {
+          x: -0.7,
+          y: 0,
+          w: 2.5,
+          iter: 50,
+          type: 'mandelbrot',
+          smooth: true
+        };
+        color = {
+          offset: 0,
+          density: 20,
+          id: 0
+        };
+      }
+      // additional parameters
+      if (req.query.offset) color.offset = Number(req.query.offset);
+      if (req.query.density) color.density = Number(req.query.density);
+      if (req.query.id) color.id = Number(req.query.id);
+
+      if (req.query.x) desc.x = Number(req.query.x);
+      if (req.query.y) desc.y = Number(req.query.y);
+      if (req.query.w) desc.w = Number(req.query.w);
+      if (req.query.iter) desc.iter = Number(req.query.iter);
+      if (req.query.type) desc.type = req.query.type;
+      if (req.query.smooth) desc.smooth = req.query.smooth === 'true';
 
       const uint = await renderOnCanvas(desc, color, width, height);
       const str = await getPngBuffer(uint, width, height);
@@ -125,7 +148,13 @@ if (cluster.isMaster && process.env.ENABLE_CLUSTER) {
       res.set('Pragma', 'no-cache');
       res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.send(str);
-    });
+
+
+    } finally {
+      concurrentRequests -= 1;
+    }
+
+  });
 
   app.listen(port, () => console.log(`Listening on port ${port}!`));
 }

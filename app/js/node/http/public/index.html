@@ -262,7 +262,7 @@
 
 
   const statsHistory = [];
-  const statPeriodInSeconds = 5;
+  const statPeriodInSeconds = 6;
 
 
   function changeSmileyStatus(waitingTime){
@@ -280,7 +280,7 @@
   }
   //stats
   setInterval(function () {
-    const averageThroughput = count / statPeriodInSeconds;
+    const averageThroughput = Math.round(count / statPeriodInSeconds);
     const averageWait = Math.floor(cumulatedLatencies / count);
     statsHistory.push({
       averageWait,
