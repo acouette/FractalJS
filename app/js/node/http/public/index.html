@@ -270,9 +270,9 @@
     const statusContent = document.getElementById('status');
     statusContent.removeAttribute('class');
 
-    if (waitingTime < 1) {
+    if (waitingTime < 2) {
       statusContent.setAttribute('class', 'fas fa-smile-beam happy');
-    } else if (waitingTime >= 1.5 && waitingTime < 3) {
+    } else if (waitingTime < 4) {
       statusContent.setAttribute('class', 'far fa-meh neutre');
     } else {
       statusContent.setAttribute('class', 'far fa-angry angry');
