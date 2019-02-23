@@ -59,7 +59,6 @@
 
         .smaller {
             padding-bottom: 20px;
-            color: #BDC3C7;
             font-size: .45em;
             vertical-align: super;
         }
@@ -89,26 +88,24 @@
 
 <div class="card">
     <div class="card-body">
-
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Request images : </label>
-            <div class="col-sm-3">
-                <input onkeyup="onImagesPerSecondChange(this)" onmouseup="onImagesPerSecondChange(this)" type="number"
-                       value="1" class="form-control">
-            </div>
-        </div>
-
         <div class="container">
             <div class="row">
+                <div class="form-group row col-12" style="justify-content: center;">
+                    <label class="col-sm-2 col-form-label">Clients per second : </label>
+                    <div class="col-sm-3">
+                        <input onkeyup="onImagesPerSecondChange(this)" onmouseup="onImagesPerSecondChange(this)" type="number"
+                               value="1" class="form-control">
+                    </div>
+                </div>
                 <div class="col-6">
                     <div class="card">
                         <div class="card-body" style="width: 100% !important;">
-                            <canvas id="myChart"></canvas>
+                            <canvas id="lineChart"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-6">
+                <div class="col-6" style="float: left;">
                     <div class="card">
                         <div class="card-body" style="width: 100% !important;">
                             <div id="specificChart" class="donut-size">
@@ -125,6 +122,21 @@
                                 </div>
                             </div>
                             <p style="color: grey; font-size: 14px; text-align: center; margin-top: 3%;">Clients waiting</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12" style="margin-top: 3%;">
+                    <div class="card">
+                        <div>
+                            <p style="color: grey; font-size: 14px; text-align: center; margin-top: 3%;">Generated Images</p>
+                        </div>
+                        <div class="card-body" style="width: 100% !important;">
+                            <div style="display: flex; flex-wrap: wrap">
+
+                                <div id="container"/>
+
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -146,13 +158,6 @@
         </div>
     </div>
 </div>
-
-<div style="display: flex; flex-wrap: wrap">
-
-    <div id="container"/>
-
-
-</div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -163,9 +168,7 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-<script src="https://github.com/kimmobrunfeldt/progressbar.js/blob/master/dist/progressbar.js"></script>
-<script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script><script>
 
 
   let imagesPerSecond = 1;
@@ -207,7 +210,7 @@
         img.style.cssText = 'width: 100px; height: 100px; margin: 3px';
         cumulatedLatencies += (new Date().getTime() - start);
         clientsWaiting -= 1;
-        updateDonutChart('#specificChart', clientsWaiting, true);
+        updateDonutChart('#specificChart', clientsWaiting);
         document.getElementById('client-waiting').textContent = clientsWaiting;
         count += 1;
       })
@@ -231,7 +234,6 @@
 
 
   const statsHistory = [];
-  const testHistory = [];
   const statPeriodInSeconds = 5;
   //stats
   setInterval(function () {
@@ -241,10 +243,7 @@
       averageWait,
       averageThroughput,
     });
-    testHistory.push(averageWait);
     adddata(averageWait, averageThroughput);
-    console.error(statsHistory);
-
     document.getElementById('average-wait').textContent = averageWait.toString();
     document.getElementById('average-throughput').textContent = averageThroughput.toString();
     count = 0;
@@ -256,7 +255,7 @@
     value: 1
   });
 
-  const canvas = document.getElementById('myChart');
+  const canvas = document.getElementById('lineChart');
   const data = {
     labels: [],
     datasets: [
@@ -284,7 +283,7 @@
   };
 
   function adddata(averageWait, averageOutput) {
-    myLineChart.data.datasets[0].data.push(averageWait);
+    myLineChart.data.datasets[0].data.push(averageWait / 1000.0);
     myLineChart.data.labels.push(averageOutput);
     myLineChart.update();
   }
@@ -298,13 +297,13 @@
       yAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Average wait time'
+          labelString: 'Average wait time ( seconds )'
         }
       }],
       xAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Average throughput'
+          labelString: 'Average throughput ( images/second )'
         }
       }],
     }
@@ -318,7 +317,8 @@
 </script>
 
 <script>
-  function updateDonutChart(el, percent, donut) {
+  /*Client waiting*/
+  function updateDonutChart(el, percent) {
     percent = Math.round(percent);
     if (percent > 50) {
       percent = 50;
@@ -328,6 +328,8 @@
     const deg = Math.round(360 * (percent / 50));
     const statusContent = document.getElementById('status');
     statusContent.removeAttribute('class');
+
+    //Change smiley status
     if (percent < 10) {
       statusContent.setAttribute('class', 'fas fa-smile-beam happy');
     } else if (percent >= 10 && percent < 30) {
@@ -347,14 +349,12 @@
       $(el + ' .right-side')
         .css('transform', 'rotate(0deg)');
     }
-    if (donut) {
-      $(el + ' .right-side')
-        .css('border-width', '0.1em');
-      $(el + ' .left-side')
-        .css('border-width', '0.1em');
-      $(el + ' .shadow')
-        .css('border-width', '0.1em');
-    }
+    $(el + ' .right-side')
+      .css('border-width', '0.1em');
+    $(el + ' .left-side')
+      .css('border-width', '0.1em');
+    $(el + ' .shadow')
+      .css('border-width', '0.1em');
     $(el + ' .num')
       .text(percent);
     $(el + ' .left-side')
@@ -362,7 +362,7 @@
   }
 
   // Pass in a number for the percent
-  updateDonutChart('#specificChart', 0, true);
+  updateDonutChart('#specificChart', 0);
 </script>
 </body>
 </html>
