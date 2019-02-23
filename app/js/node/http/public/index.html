@@ -441,6 +441,16 @@
     strokeColor: '#E0E0E0',
     generateGradient: true,
     highDpiSupport: true,
+    staticZones: [
+      {strokeStyle: "#1ABC9C", min: 0, max: 17},
+      {strokeStyle: "#F03E3E", min: 17, max: 20}
+    ],
+    staticLabels: {
+      font: "10px Lato",  // Specifies font
+      labels: [0, 20],  // Print labels at these values
+      color: "#7F8C8D",  // Optional: Label text color
+      fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+    }
 
   };
   const target = document.getElementById('gauge');
