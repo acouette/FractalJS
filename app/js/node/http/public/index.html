@@ -87,6 +87,10 @@
             color: #FFD740;
         }
 
+        .container {
+            max-width: 1400px !important;
+        }
+
     </style>
 </head>
 <body>
@@ -113,10 +117,10 @@
                     </div>
                 </div>
 
-                <div class="col-6" style="float: left;">
-                    <div class="card">
+                <div class="col-3" style="float: left;">
+                    <div class="card" style="height: 354px;">
                         <div class="card-body" style="width: 100% !important;">
-                            <div id="specificChart" class="donut-size">
+                            <div id="specificChart" class="donut-size" style="margin-top: 8%;">
                                 <div class="pie-wrapper">
                                 <span class="label">
                                     <span class="num">0</span><span class="smaller"><i class="fas fa-smile-beam happy"
@@ -131,6 +135,18 @@
                             </div>
                             <p style="color: grey; font-size: 14px; text-align: center; margin-top: 4%;">Clients
                                 waiting</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3" style="float: left;">
+                    <div class="card" style="height: 354px;">
+                        <div class="card-body" style="width: 100% !important; text-align: center;margin-top: 20%;">
+                            <div style="color: grey; font-weight: bold;">
+                                <span id="average-throughput">N/A</span> images/second
+                            </div>
+                            <div>
+                                <canvas id="gauge"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -161,10 +177,10 @@
                 <label>Average wait time: </label>
                 <span id="average-wait">N/A</span> ms
             </div>
-            <div>
+            <!--<div>
                 <label>Average throughput: </label>
                 <span id="average-throughput">N/A</span> images/second
-            </div>
+            </div>-->
         </div>
     </div>
 </div>
@@ -179,6 +195,7 @@
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script src="http://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
 <script>
 
 
@@ -246,15 +263,32 @@
 
   const statsHistory = [];
   const statPeriodInSeconds = 5;
+
+
+  function changeSmileyStatus(waitingTime){
+    console.error(waitingTime);
+    const statusContent = document.getElementById('status');
+    statusContent.removeAttribute('class');
+
+    if (waitingTime < 1) {
+      statusContent.setAttribute('class', 'fas fa-smile-beam happy');
+    } else if (waitingTime >= 1.5 && waitingTime < 3) {
+      statusContent.setAttribute('class', 'far fa-meh neutre');
+    } else {
+      statusContent.setAttribute('class', 'far fa-angry angry');
+    }
+  }
   //stats
   setInterval(function () {
-    const averageWait = Math.floor(cumulatedLatencies / count);
     const averageThroughput = count / statPeriodInSeconds;
+    const averageWait = Math.floor(cumulatedLatencies / count);
     statsHistory.push({
       averageWait,
       averageThroughput,
     });
-    adddata(averageWait, averageThroughput);
+    adddata(averageWait, Date.now());
+    changeSmileyStatus(averageWait / 1000.0);
+    gauge.set(averageThroughput);
     document.getElementById('average-wait').textContent = averageWait.toString();
     document.getElementById('average-throughput').textContent = averageThroughput.toString();
     count = 0;
@@ -328,14 +362,14 @@
       xAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Average throughput ( images/second )',
+          labelString: 'Timestamp',
           fontColor: '#1ABC9C',
           fontStyle: 'bold',
           fontFamily: 'Lato',
           fontSize: '14'
         },
         ticks: {
-          fontSize: 12,
+          fontSize: 6,
           fontFamily: '\'Lato\', sans-serif',
           fontColor: '#7F8C8D',
           fontStyle: '500',
@@ -362,17 +396,7 @@
       percent = 0;
     }
     const deg = Math.round(360 * (percent / 50));
-    const statusContent = document.getElementById('status');
-    statusContent.removeAttribute('class');
 
-    //Change smiley status
-    if (percent < 10) {
-      statusContent.setAttribute('class', 'fas fa-smile-beam happy');
-    } else if (percent >= 10 && percent < 30) {
-      statusContent.setAttribute('class', 'far fa-meh neutre');
-    } else {
-      statusContent.setAttribute('class', 'far fa-angry angry');
-    }
 
     if (percent > 25) {
       $(el + ' .pie')
@@ -399,6 +423,32 @@
 
   // Pass in a number for the percent
   updateDonutChart('#specificChart', 0);
+</script>
+<script>
+  const opts = {
+    angle: 0.15,
+    lineWidth: 0.44,
+    radiusScale: 1,
+    pointer: {
+      length: 0.6,
+      strokeWidth: 0.035,
+      color: '#000000'
+    },
+    limitMax: false,
+    limitMin: false,
+    colorStart: '#1ABC9C',
+    colorStop: '#1ABC9C',
+    strokeColor: '#E0E0E0',
+    generateGradient: true,
+    highDpiSupport: true,
+
+  };
+  const target = document.getElementById('gauge');
+  const gauge = new Gauge(target).setOptions(opts);
+  gauge.maxValue = 20;
+  gauge.setMinValue(0);
+  gauge.animationSpeed = 32;
+  gauge.set(0);
 </script>
 </body>
 </html>
