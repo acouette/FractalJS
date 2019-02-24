@@ -1,94 +1,455 @@
 <html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Lato:700" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Lato', sans-serif;
+        }
+
+        .donut-size {
+            font-size: 12em;
+        }
+
+        .pie-wrapper {
+            position: relative;
+            width: 1em;
+            height: 1em;
+            margin: 0px auto;
+        }
+
+        .pie {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            clip: rect(0, 1em, 1em, 0.5em);
+        }
+
+        .half-circle {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            border: 0.1em solid hsl(168, 76%, 42%);
+            border-radius: 50%;
+            clip: rect(0em, 0.5em, 1em, 0em);
+        }
+
+        .right-side {
+            transform: rotate(0deg);
+        }
+
+        .label {
+            position: absolute;
+            top: 0.52em;
+            right: 0.4em;
+            bottom: 0.4em;
+            left: 0.4em;
+            display: block;
+            background: none;
+            border-radius: 50%;
+            color: #7F8C8D;
+            font-size: 0.25em;
+            line-height: 2.6em;
+            text-align: center;
+            cursor: default;
+            z-index: 2;
+        }
+
+        .smaller {
+            padding-bottom: 20px;
+            font-size: .45em;
+            vertical-align: super;
+        }
+
+        .shadow {
+            width: 100%;
+            height: 100%;
+            border: 0.1em solid #BDC3C7;
+            border-radius: 50%;
+        }
+
+        .happy {
+            color: yellowgreen;
+        }
+
+        .angry {
+            color: #c62828;
+        }
+
+        .neutre {
+            color: #FFD740;
+        }
+
+        .container {
+            max-width: 1400px !important;
+        }
+
+    </style>
+</head>
 <body>
 
-<div>
-    <div>
-        <label>Number of images : </label>
-        <select onchange="onImageNumberChange(this)">
-            <option value="10" selected="selected">10</option>
-            <option value="25">25</option>
-            <option value="100">100</option>
-        </select>
-    </div>
-    <div>
-        <label>Refresh rate : </label>
-        <select onchange="onRefreshRateChange(this)">
-            <option value="5">5</option>
-            <option value="10" selected="selected">10</option>
-            <option value="60">60</option>
-        </select>
-        s
+<div class="card" style="background: #ECF0F1;">
+    <div class="card-body">
+        <div class="container">
+            <div class="row">
+                <div class="form-group row col-12" style="justify-content: center;">
+                    <label class="col-sm-12 col-form-label"
+                           style="text-align: center;font-weight: bold;color: hsl(168, 76%, 42%); text-transform: uppercase;">Clients
+                        per second </label>
+                    <div class="col-sm-1">
+                        <input onkeyup="onImagesPerSecondChange(this)" onmouseup="onImagesPerSecondChange(this)"
+                               type="number"
+                               value="1" class="form-control" style="color: hsl(168, 76%, 42%);" min="1">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-body" style="width: 100% !important;">
+                            <canvas id="lineChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-3" style="float: left;">
+                    <div class="card" style="height: 354px;">
+                        <div class="card-body" style="width: 100% !important;">
+                            <div id="specificChart" class="donut-size" style="margin-top: 8%;">
+                                <div class="pie-wrapper">
+                                <span class="label">
+                                    <span class="num">0</span><span class="smaller"><i class="fas fa-smile-beam happy"
+                                                                                       id="status"></i></span>
+                                </span>
+                                    <div class="pie">
+                                        <div class="left-side half-circle"></div>
+                                        <div class="right-side half-circle"></div>
+                                    </div>
+                                    <div class="shadow"></div>
+                                </div>
+                            </div>
+                            <p style="color: grey; font-size: 14px; text-align: center; margin-top: 4%;">Clients
+                                waiting</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3" style="float: left;">
+                    <div class="card" style="height: 354px;">
+                        <div class="card-body" style="width: 100% !important; text-align: center;margin-top: 20%;">
+                            <div style="color: grey; font-weight: bold;">
+                                <span id="average-throughput">N/A</span> images/second
+                            </div>
+                            <div>
+                                <canvas id="gauge"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12" style="margin-top: 3%;">
+                    <div class="card">
+                        <div>
+                            <p style="color: grey; font-size: 14px; text-align: center; margin-top: 3%;">Generated
+                                Images</p>
+                        </div>
+                        <div class="card-body" style="width: 100% !important;">
+                            <div style="display: flex; flex-wrap: wrap">
+
+                                <div id="container"/>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <label>Clients waiting : </label>
+            <span id="client-waiting">N/A</span>
+
+
+            <div>
+                <label>Average wait time: </label>
+                <span id="average-wait">N/A</span> ms
+            </div>
+            <!--<div>
+                <label>Average throughput: </label>
+                <span id="average-throughput">N/A</span> images/second
+            </div>-->
+        </div>
     </div>
 </div>
-
-<div style="display: flex; flex-wrap: wrap">
-
-    <div id="container"/>
-
-
-</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
 <script>
 
 
-    let imageCount = 10;
-    let refreshRate = 10;
-    let timeout;
-
-    function repaint(){
-        console.log('repainting');
-        document.getElementById("container").innerHTML = '';
-        for(let i=0; i<imageCount; i++){
-            console.log(imageCount)
-            console.log('image '+i)
-            const randomCount = Math.round(Math.random() * 21);
-            const randomDisableCache = Math.round(Math.random() * 100000);
-            const img = document.createElement('img');
-            img.style.cssText="width: 100px; height: 100px; margin: 3px; background-color: #3F51B5";
-            document.getElementById("container").appendChild(img);
-
-            fetch(`https://qrgtkvh0zk.execute-api.eu-west-1.amazonaws.com/default/fractal?preset=${randomCount}&width=100&height=100&random=${randomDisableCache}`, {
-                method: "GET", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, cors, *same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                headers: {
-                    "Accept": "image/png",
-                }
-                //body: JSON.stringify(data), // body data type must match "Content-Type" header
-            })
-                .then(r => new Response(r.body))
-                .then(response => response.blob())
-                .then(blob => URL.createObjectURL(blob))
-                .then(url => console.log(img.src = url))
+  let imagesPerSecond = 1;
+  let interval;
 
 
-                .catch(e=> {console.error(e)});
+  let cumulatedLatencies = 0;
+  let count = 0;
+  let clientsWaiting = 0;
+
+
+  function getFractal() {
+    if (clientsWaiting > 50) {
+      return;
+    }
+    const randomCount = Math.round(Math.random() * 21);
+    const randomDisableCache = Math.round(Math.random() * 100000);
+    const img = document.createElement('img');
+    img.style.cssText = 'width: 100px; height: 100px; margin: 3px; display: none';
+    document.getElementById('container')
+      .appendChild(img);
+    clientsWaiting += 1;
+    const start = new Date().getTime();
+
+    fetch(`https://qrgtkvh0zk.execute-api.eu-west-1.amazonaws.com/default/fractal?preset=${randomCount}&width=100&height=100&random=${randomDisableCache}`, {
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, cors, *same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      headers: {
+        'Accept': 'image/png',
+      }
+      //body: JSON.stringify(data), // body data type must match "Content-Type" header
+    })
+      .then(r => new Response(r.body))
+      .then(response => response.blob())
+      .then(blob => URL.createObjectURL(blob))
+      .then(url => console.log(img.src = url))
+      .then(() => {
+        img.style.cssText = 'width: 100px; height: 100px; margin: 3px';
+        cumulatedLatencies += (new Date().getTime() - start);
+        clientsWaiting -= 1;
+        updateDonutChart('#specificChart', clientsWaiting);
+        document.getElementById('client-waiting').textContent = clientsWaiting;
+        count += 1;
+      })
+      .then(() => setTimeout(() => {
+        img.remove();
+      }, 3000))
+
+
+      .catch(e => {
+        console.error(e);
+        clientsWaiting -= 1;
+      });
+  }
+
+  function onImagesPerSecondChange(event) {
+    imagesPerSecond = event.value;
+    if (interval) {
+      clearInterval(interval);
+    }
+    interval = setInterval(getFractal, (1 / imagesPerSecond) * 1000);
+  }
+
+
+  const statsHistory = [];
+  const statPeriodInSeconds = 6;
+
+
+  function changeSmileyStatus(waitingTime){
+    console.error(waitingTime);
+    const statusContent = document.getElementById('status');
+    statusContent.removeAttribute('class');
+
+    if (waitingTime < 4) {
+      statusContent.setAttribute('class', 'fas fa-smile-beam happy');
+    } else if (waitingTime < 8) {
+      statusContent.setAttribute('class', 'far fa-meh neutre');
+    } else {
+      statusContent.setAttribute('class', 'far fa-angry angry');
+    }
+  }
+  //stats
+  setInterval(function () {
+    const averageThroughput = Math.round(count / statPeriodInSeconds);
+    const averageWait = Math.floor(cumulatedLatencies / count);
+    statsHistory.push({
+      averageWait,
+      averageThroughput,
+    });
+    adddata(averageWait, Date.now());
+    changeSmileyStatus(averageWait / 1000.0);
+    gauge.set(averageThroughput);
+    document.getElementById('average-wait').textContent = averageWait.toString();
+    document.getElementById('average-throughput').textContent = averageThroughput.toString();
+    count = 0;
+    cumulatedLatencies = 0;
+  }, statPeriodInSeconds * 1000);
+
+
+  onImagesPerSecondChange({
+    value: 1
+  });
+
+  const canvas = document.getElementById('lineChart');
+  const data = {
+    labels: [],
+    datasets: [
+      {
+        fill: false,
+        lineTension: 0.1,
+        backgroundColor: 'rgba(75,192,192,0.4)',
+        borderColor: 'rgba(75,192,192,1)',
+        borderCapStyle: 'butt',
+        borderDash: [],
+        borderDashOffset: 0.0,
+        borderJoinStyle: 'miter',
+        pointBorderColor: 'rgba(75,192,192,1)',
+        pointBackgroundColor: '#fff',
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+        pointHoverBorderColor: 'rgba(220,220,220,1)',
+        pointHoverBorderWidth: 2,
+        pointRadius: 2,
+        pointHitRadius: 10,
+        data: []
+      }
+    ]
+  };
+
+  function adddata(averageWait, averageOutput) {
+    myLineChart.data.datasets[0].data.push(averageWait / 1000.0);
+    myLineChart.data.labels.push(averageOutput);
+    myLineChart.update();
+  }
+
+  const option = {
+    showLines: true,
+    legend: {
+      display: false
+    },
+    scales: {
+      yAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Average wait time ( seconds )',
+          fontColor: '#1ABC9C',
+          fontStyle: 'bold',
+          fontFamily: 'Lato',
+          fontSize: '14'
+        },
+        ticks: {
+          fontSize: 12,
+          fontFamily: '\'Lato\', sans-serif',
+          fontColor: '#7F8C8D',
+          fontStyle: '500',
+          fontWeight: 'bold'
+        },
+        pointLabels: {
+          fontFamily: '\'Raleway\''
         }
+      }],
+      xAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Timestamp',
+          fontColor: '#1ABC9C',
+          fontStyle: 'bold',
+          fontFamily: 'Lato',
+          fontSize: '14'
+        },
+        ticks: {
+          fontSize: 6,
+          fontFamily: '\'Lato\', sans-serif',
+          fontColor: '#7F8C8D',
+          fontStyle: '500',
+          fontWeight: 'bold'
+        }
+      }],
     }
+  };
+  const myLineChart = Chart.Line(canvas, {
+    data: data,
+    options: option
+  });
 
 
+</script>
 
-    function onImageNumberChange(event){
-        imageCount = event.value;
-        repaint();
+<script>
+  /*Client waiting*/
+  function updateDonutChart(el, percent) {
+    percent = Math.round(percent);
+    if (percent > 50) {
+      percent = 50;
+    } else if (percent < 0) {
+      percent = 0;
     }
-    function onRefreshRateChange(event){
-        clearTimeout(timeout);
-        refreshRate = event.value;
-        restartTimeout();
-        repaint();
+    const deg = Math.round(360 * (percent / 50));
+
+
+    if (percent > 25) {
+      $(el + ' .pie')
+        .css('clip', 'rect(auto, auto, auto, auto)');
+      $(el + ' .right-side')
+        .css('transform', 'rotate(180deg)');
+    } else {
+      $(el + ' .pie')
+        .css('clip', 'rect(0, 1em, 1em, 0.5em)');
+      $(el + ' .right-side')
+        .css('transform', 'rotate(0deg)');
     }
+    $(el + ' .right-side')
+      .css('border-width', '0.1em');
+    $(el + ' .left-side')
+      .css('border-width', '0.1em');
+    $(el + ' .shadow')
+      .css('border-width', '0.1em');
+    $(el + ' .num')
+      .text(percent);
+    $(el + ' .left-side')
+      .css('transform', 'rotate(' + deg + 'deg)');
+  }
 
-    function restartTimeout(){
-        timeout = setTimeout(()=>{
-            repaint();
-            restartTimeout();
-        }, refreshRate * 1000);
-    }
+  // Pass in a number for the percent
+  updateDonutChart('#specificChart', 0);
+</script>
+<script>
+  const opts = {
+    angle: 0.15,
+    lineWidth: 0.44,
+    radiusScale: 1,
+    pointer: {
+      length: 0.6,
+      strokeWidth: 0.035,
+      color: '#000000'
+    },
+    limitMax: false,
+    limitMin: false,
+    colorStart: '#1ABC9C',
+    colorStop: '#1ABC9C',
+    strokeColor: '#E0E0E0',
+    generateGradient: true,
+    highDpiSupport: true,
 
-
-    repaint();
-    restartTimeout();
-
+  };
+  const target = document.getElementById('gauge');
+  const gauge = new Gauge(target).setOptions(opts);
+  gauge.maxValue = 15;
+  gauge.setMinValue(0);
+  gauge.animationSpeed = 32;
+  gauge.set(0);
 </script>
 </body>
 </html>
