@@ -66,46 +66,20 @@ function getPngBuffer(array, width, height) {
   });
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-if (cluster.isMaster && process.env.ENABLE_CLUSTER) {
-  console.log(`Master ${process.pid} is running`);
-
-  // Fork workers.
-  for (let i = 0; i < 2 * numCPUs; i++) {
-    cluster.fork();
-  }
-
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(`worker ${worker.process.pid} died`);
-  });
-} else {
-  const app = express();
-
-  console.log(__dirname);
-
-  app.use('/', express.static(path.join(__dirname, 'public')));
-
-  app.get('/health', (req, res) => {
-    res.send(200);
-  });
-
-  let concurrentRequests = 0;
 
 
+let concurrentRequests = 0;
 
 
-  app.get('/random', async (req, res) => {
+const queue = [];
 
+async function consumeQueue() {
+  if (concurrentRequests < 5 && queue.length > 0) {
 
     concurrentRequests += 1;
+    const { req, res } = queue.pop();
 
     try {
-      if (concurrentRequests > 3) {
-        await sleep(500);
-      }
 
       const width = req.query.width ? Number(req.query.width) : 512;
       const height = req.query.height ? Number(req.query.height) : 512;
@@ -152,7 +126,44 @@ if (cluster.isMaster && process.env.ENABLE_CLUSTER) {
 
     } finally {
       concurrentRequests -= 1;
+      consumeQueue();
     }
+
+
+  }
+}
+
+if (cluster.isMaster && process.env.ENABLE_CLUSTER) {
+  console.log(`Master ${process.pid} is running`);
+
+  // Fork workers.
+  for (let i = 0; i < 2 * numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died`);
+  });
+} else {
+  const app = express();
+
+  console.log(__dirname);
+
+  app.use('/', express.static(path.join(__dirname, 'public')));
+
+  app.get('/health', (req, res) => {
+    res.send(200);
+  });
+
+
+  app.get('/random', async (req, res) => {
+
+
+    queue.push({
+      req, res
+    });
+    consumeQueue();
+
 
   });
 

@@ -249,6 +249,7 @@
 
       .catch(e => {
         console.error(e);
+        clientsWaiting -= 1;
       });
   }
 
@@ -445,7 +446,7 @@
   };
   const target = document.getElementById('gauge');
   const gauge = new Gauge(target).setOptions(opts);
-  gauge.maxValue = 20;
+  gauge.maxValue = 15;
   gauge.setMinValue(0);
   gauge.animationSpeed = 32;
   gauge.set(0);
